@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>index.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+<link rel="stylesheet" href="file:///home/lpre_ys/dev/pages/C%3A%5C%5Cdev%5C%5Cvscode%5C%5Cmd.css" type="text/css">
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="lpre-ys">lpre-ys</h1>
+<h2 id="%E3%82%A2%E3%82%AB%E3%82%A6%E3%83%B3%E3%83%88--accounts">アカウント / Accounts</h2>
+<ul>
+<li>misskey</li>
+<li>xfolio</li>
+<li>github</li>
+<li>booth</li>
+<li>twitch</li>
+<li>ravelry</li>
+<li>youtube</li>
+<li>twitter</li>
+<li>pixiv</li>
+<li>fanbox</li>
+</ul>
+<p>※2024.12.05現在、更新停止から長期間経過しているアカウントについては、リストに記載しておりません。</p>
+<h2 id="%E4%BB%A3%E8%A1%A8%E4%BD%9C--works">代表作 / Works</h2>
+<h3 id="%E3%82%B2%E3%83%BC%E3%83%A0">ゲーム</h3>
+<h4 id="%E7%8E%89%E9%9C%B2%E3%81%AE%E7%B6%9A%E3%81%8D%E7%89%A9%E3%82%B7%E3%83%AA%E3%83%BC%E3%82%BA">玉露の続き物シリーズ</h4>
+<p>某所にて公開中。</p>
+<h3 id="rpg%E3%83%84%E3%82%AF%E3%83%BC%E3%83%AB20002003%E5%90%91%E3%81%91%E3%83%84%E3%83%BC%E3%83%AB">RPGツクール2000(2003)向けツール</h3>
+<h4 id="effect-conductor"><a href="https://github.com/lpre-ys/tk2k-effect-conductor/releases">Effect Conductor</a></h4>
+<p>エフェクト作成補助ツール。要インストール。</p>
+<h4 id="%E4%B8%80%E6%8B%AC%E6%8C%87%E5%AE%9A-plus"><a href="https://github.com/lpre-ys/tk2k-cell-batch-plus">一括指定 Plus</a></h4>
+<p>Effect Conductorのオマケで作ったツール。要インストール。</p>
+<h4 id="magic-pot"><a href="https://github.com/lpre-ys/magic-pot">magic-pot</a></h4>
+<p>ピクチャの透過指定用に、256色PNG画像のパレット順序を調整するCUIツール。利用手順が複雑なので詳しくはreadme読んでください。</p>
+<h4 id="rpg%E3%83%84%E3%82%AF%E3%83%BC%E3%83%AB2000-%E8%89%B2%E8%AA%BF%E3%82%B7%E3%83%9F%E3%83%A5%E3%83%AC%E3%83%BC%E3%82%BF"><a href="https://lpre-ys.github.io/tk-color-test/">RPGツクール2000 色調シミュレータ</a></h4>
+<p>そのまんま。Webアプリなのでインストール不要。</p>
+<h4 id="tk2k-message-assist"><a href="https://lpre-ys.github.io/tma-front/">tk2k-message-assist</a></h4>
+<p>文章コマンド生成サポートツール。Webアプリ。</p>
+<h4 id="tk2k-point-tool"><a href="https://lpre-ys.github.io/tk-point/">Tk2k Point Tool</a></h4>
+<p>マップチップに合わせてピクチャを置きたい時の座標取得ツール。Webアプリ。</p>
+<h4 id="tk2k-pic-support"><a href="https://lpre-ys.github.io/tk2k-pic-support/">tk2k-pic-support</a></h4>
+<p>ピクチャを特定の位置に配置するためのツクールブリッジ用コードを吐くツール。Webアプリ。</p>
+<h3 id="%E3%81%9D%E3%81%AE%E4%BB%96%E3%83%84%E3%83%BC%E3%83%AB">その他ツール</h3>
+<h4 id="choose-at-random"><a href="https://lpre-ys.github.io/car/">Choose at Random</a></h4>
+<p>ただの抽選ツール。なんとか王のインストールが面倒で作った。Webアプリ。</p>
+<h4 id="time-keeper">Time Keeper</h4>
+<p>作業時間と休憩時間のトラッキングをするためのタイマーツール。要インストール。<br>
+......GitHubにage忘れてたので後で上げます。</p>
+<h2 id="%E8%A6%8F%E7%B4%84--licenses">規約 / Licenses</h2>
+<p>最終更新日: 2024.12.05</p>
+<p>私、lpre-ysの著作物の全ての権利は私に帰属します。</p>
+<p>All rights reserved.</p>
+<p>本規約は、利用時点で有効な内容が適用されます。<br>
+過去の規約についてはGitHubにて管理・公開しております(予定)。参照が必要な場合にはご確認ください。</p>
+<p>The terms effective at the time of use will apply to the usage of any materials or content.<br>
+Previous versions of the terms are archived and available on GitHub for reference.</p>
+<p>私の著作物から、サイン・署名を剥がしての利用は固く禁じます。<br>
+なりすまし及び私が直接関与していない物に対して私の名前を出すことを禁止します。</p>
+<p>The removal of my signature or watermark from my works is strictly prohibited.<br>
+Impersonation or associating my name with anything I am not directly involved in is forbidden.</p>
+<p>本ページでは英語による概要を掲載しておりますが、詳細なルールおよび規約は日本語によって定められています。<br>
+万が一、翻訳の解釈違いや誤解が生じた場合には、日本語の規約が優先されます。</p>
+<p>While this document includes an English summary, the detailed rules and terms are defined in Japanese.<br>
+In case of any disputes or misunderstandings, the Japanese rules will take precedence.</p>
+<p>プロフィールに記載された媒体・アカウント以外で、私が作品を発表したり、私がlpre-ysであることを公表することはありません。<br>
+匿名掲示板や派生サイトなど、個人アカウントを持てない場所での作品発表については、同時にSNS上でその旨をお知らせします。<br>
+万が一、これら以外の場面で私の名前や作品が使用されている場合は、お手数ですがご一報ください。</p>
+<h3 id="%E3%82%A4%E3%83%A9%E3%82%B9%E3%83%88">イラスト</h3>
+<p>私のイラストの転載、複製、改変、再投稿、その他の二次利用を一切禁止します。<br>
+ただし、いわゆるリツイートやリノートなど、SNS上で投稿を無改変のまま共有する機能については転載には該当しません。これらは自由にご利用いただけます。</p>
+<p>ゲーム素材化されていないものを素材化して利用するのも禁止です。</p>
+<p>ただし、公開時に何らかの利用許可を出している場合、そのルールに則る限り利用可能です。<br>
+例）「サインを残していれば、SNSの返信画像としての利用OKです。」と記載がある場合など</p>
+<h3 id="%E3%83%97%E3%83%AD%E3%82%B0%E3%83%A9%E3%83%A0">プログラム</h3>
+<p>各プログラム添付のreadmeに記載のライセンスをご確認ください。</p>
+<h3 id="%E3%82%B2%E3%83%BC%E3%83%A0%E7%B4%A0%E6%9D%90%E3%83%89%E3%83%83%E3%83%88%E7%B5%B5bgm%E3%81%AA%E3%81%A9">ゲーム素材（ドット絵、BGMなど）</h3>
+<p>原則、加工・改変の有無を問わず利用を禁止します。<br>
+ゲーム内楽曲を動画のBGMとして利用する等の、ゲーム以外での利用も禁止です。</p>
+<p>ただし、 <strong>下記の場合に限り、例外として許可</strong> します。</p>
+<h4 id="%E7%B4%A0%E6%9D%90%E6%8E%B2%E7%A4%BA%E6%9D%BF%E7%AD%89%E7%B4%A0%E6%9D%90%E3%81%A8%E3%81%97%E3%81%A6%E4%BD%BF%E3%82%8F%E3%82%8C%E3%82%8B%E5%89%8D%E6%8F%90%E3%81%AE%E5%A0%B4%E6%89%80%E3%81%A7%E5%85%AC%E9%96%8B%E3%81%95%E3%82%8C%E3%81%9F%E7%89%A9">素材掲示板等、素材として使われる前提の場所で公開された物</h4>
+<p>公開先のルールを守れば利用可能です。</p>
+<h4 id="viprpg%E9%96%A2%E9%80%A3%E4%BD%9C%E5%93%81%E3%81%A7%E4%BD%BF%E3%81%A3%E3%81%A6%E3%81%84%E3%82%8B%E8%87%AA%E4%BD%9C%E7%B4%A0%E6%9D%90">VIPRPG関連作品で使っている自作素材</h4>
+<p>ゲーム添付の規約を守る、あるいは下記4つの条件を全て満たす場合、利用可能です。</p>
+<ol>
+<li>VIPRPG関連のサイト（本スレ、祭りなど）でのみ公開するゲームであること</li>
+<li>ピクチャ素材の場合、それがバトル用のモンスターグラフィックであること<br>
+（ピクチャフォルダにある場合でも、ゲーム内バトルで敵キャラクターの描画に使われている場合問題ありません）</li>
+<li>ゲーム添付のテキストまたは素材ファイル名にて、転用禁止と記載がない素材であること</li>
+<li>配布物のわかりやすい場所にて、下記3点を記載し、私のゲームから素材を転用していることを明記すること
+<ul>
+<li>ゲームタイトル</li>
+<li>ゲームのダウンロード可能なURL</li>
+<li>作者名（lpre_ys）</li>
+</ul>
+</li>
+</ol>
+<h5 id="%E8%A3%9C%E8%B6%B3">補足</h5>
+<ul>
+<li>転用した素材のリストは不要です。</li>
+<li>私のゲームには、私以外の方が作成した素材も多く含まれています。<br>
+これらの素材については、私の規約ではなく、それぞれの素材提供者が定めた規約に従う必要があります。<br>
+万が一、これらの素材を私の素材と誤認し、転用したことで生じた問題について、私は一切の責任を負いません。利用時には必ず素材の出典と規約をご確認ください。</li>
+<li>VIPRPG関連ではない場所でも公開する場合、有償・無償にかかわらず利用禁止です。<br>
+例）祭りで公開後、ふりーむで公開する<br>
+もしVIPRPG関連外の場所でも公開したくなった場合、私の素材を差し替えてから公開してください</li>
+</ul>
+<h3 id="%E3%82%B2%E3%83%BC%E3%83%A0">ゲーム</h3>
+<p>公開場所や付属テキストにて許可している物を除き、プレイ動画の公開や実況配信は禁止します。
+ただし、下記の場合に限り許可します。</p>
+<ul>
+<li>複数のゲームやBGMの紹介が目的の動画における、数分程度の引用</li>
+</ul>
+
+</body>
+</html>
