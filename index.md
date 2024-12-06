@@ -1,19 +1,33 @@
-# lpre-ys
+# lpre_ys<span>**a.k.a** lpre-ys / lpre / えるぷれ</span>
 
+::: accounts
 ## アカウント / Accounts
 
-- misskey
-- xfolio
-- github
-- booth
-- twitch
-- ravelry
-- youtube
-- twitter
-- pixiv
-- fanbox
+- [misskey.io](https://misskey.io/@lpre_ys){.misskey}
+- [GitHub](https://github.com/lpre-ys){.github}
+- [xfolio](https://illust.lpre-ys.net/){.xfolio}
+- [pixiv](https://www.pixiv.net/users/20181347){.pixiv}
+- [booth](https://lpre-ys.booth.pm/){.booth}
+- [twitch](https://www.twitch.tv/lpre_ys){.twitch}
+- [ravelry](https://www.ravelry.com/people/lpreys){.ravelry}
+- [YouTube](https://www.youtube.com/@lpre_ys){.youtube}
+- [X(twitter)](https://x.com/lpre_ys){.twitter}
+- [fanbox](https://lpre-ys.fanbox.cc/){.fanbox}
 
-※2024.12.05現在、更新停止から長期間経過しているアカウントについては、リストに記載しておりません。
+※2024.12.05現在、更新停止から長期間経過しているアカウントは、リストに記載しておりません。
+
+### blueskyについて
+
+現在、blueskyのアカウントを運用する予定はありませんが、なりすまし防止のため、下記アカウントを確保しています。
+
+[https://bsky.app/profile/lpre-ys.bsky.social](https://bsky.app/profile/lpre-ys.bsky.social)
+
+また、blueskyとmisskey.ioのブリッジアカウントを所有しています。blueskyから私のmisskey.io上のノートを確認したい場合、下記アカウントをフォローしてください。  
+ただし、ブリッジアカウントの制限として、頂いたリアクションやリプライを確認することができません。ご了承ください。
+
+[https://bsky.app/profile/lpre-ys.misskey.io.ap.brid.gy](https://bsky.app/profile/lpre-ys.misskey.io.ap.brid.gy)
+
+:::
 
 ## 代表作 / Works
 
@@ -55,19 +69,21 @@ Effect Conductorのオマケで作ったツール。要インストール。
 ......GitHubにage忘れてたので後で上げます。
 
 
-## 規約 / Licenses
+## 規約 / Licenses{#licenses}
 
+::: update
 最終更新日: 2024.12.05
+:::
 
-私、lpre-ysの著作物の全ての権利は私に帰属します。
+私、lpre_ysの著作物の全ての権利は私に帰属します。
 
 All rights reserved.
 
 本規約は、利用時点で有効な内容が適用されます。  
-過去の規約についてはGitHubにて管理・公開しております(予定)。参照が必要な場合にはご確認ください。
+過去の規約については[GitHubにて管理・公開](https://github.com/lpre-ys/lpre-ys.github.io/blob/main/license.md)しております。参照が必要な場合にはご確認ください。
 
 The terms effective at the time of use will apply to the usage of any materials or content.  
-Previous versions of the terms are archived and available on GitHub for reference.
+Previous versions of the terms are [archived and available on GitHub](https://github.com/lpre-ys/lpre-ys.github.io/blob/main/license.md) for reference.
 
 私の著作物から、サイン・署名を剥がしての利用は固く禁じます。  
 なりすまし及び私が直接関与していない物に対して私の名前を出すことを禁止します。  
