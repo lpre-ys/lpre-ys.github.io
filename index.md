@@ -12,7 +12,7 @@
 - [ravelry](https://www.ravelry.com/people/lpreys){.ravelry}
 - [YouTube](https://www.youtube.com/@lpre_ys){.youtube}
 - [X(twitter)](https://x.com/lpre_ys){.twitter}
-- [fanbox](https://lpre-ys.fanbox.cc/){.fanbox}
+- [FANBOX](https://lpre-ys.fanbox.cc/){.fanbox}
 
 ※2024.12.05現在、更新停止から長期間経過しているアカウントは、リストに記載しておりません。
 
