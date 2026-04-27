@@ -1,17 +1,20 @@
 :root {
   --primary-color: #673AB7;
-  --sub-color: #9FA8DA;
+  --sub-color: #5C6BC0;
 }
 
 body {
   max-width: 800px;
   margin: auto;
+  background-color: #FAFAFA;
+  color: #424242;
 }
 
 a:link {
   color: var(--primary-color);
+  font-weight: bold;
 }
-    
+
 a:visited {
   color: var(--sub-color);
 }
@@ -19,14 +22,14 @@ a:visited {
 p {
   margin-left: 1em;
 }
-    
+
 h1 {
   text-align: center;
   border-bottom: 3px solid var(--primary-color);
   padding-bottom: 0.5em;
   margin-bottom: 1em;
 }
-h1:before {
+h1.name:before {
   content: '';
   display: inline-block;
   width: 50px;
@@ -55,6 +58,20 @@ h2 {
 h3 {
   padding: 0.5em 0.5em 0.1em;
   border-left: 10px double var(--primary-color);
+}
+
+code {
+  background-color: rgba(175,184,193,0.2);
+  padding: 0.1em 0.4em;
+  border-radius: 3px;
+}
+
+blockquote {
+  border-left: 2px solid var(--primary-color);
+  background-color: rgba(175,184,193,0.2);
+  margin: 1em 2em;
+  padding: 0.75em 1em;
+  border-radius: 0 4px 4px 0;
 }
 
 .update {
@@ -112,9 +129,6 @@ h3 {
 .accounts li a.ravelry:before {
   background-image: url(./icons/ravelry.png);
 }
-.accounts li a.ravelry:before {
-  background-image: url(./icons/ravelry.png);
-}
 .accounts li a.youtube:before {
   background-image: url(./icons/youtube.png);
 }
@@ -124,21 +138,26 @@ h3 {
 .accounts li a.fanbox:before {
   background-image: url(./icons/fanbox.png);
 }
-@media (prefers-color-scheme: light) {
-  body {
-    background-color: #FFF;
-    color: #424242;
-    --primary-color: #9575CD;
-    --sub-color: #5C6BC0;
-  }
+
+footer {
+  margin-top: 3em;
+  padding: 1em;
+  border-top: 1px solid var(--primary-color);
+  text-align: center;
+}
+
+footer nav {
+  margin-bottom: 0.5em;
 }
 
 @media (prefers-color-scheme: dark) {
-  body {
-    background-color: #000;
-    color: #f5f5f5;
-    --primary-color: #673AB7;
+  :root {
+    --primary-color: #8762C8;
     --sub-color: #7986CB;
+  }
+  body {
+    background-color: #121212;
+    color: #f5f5f5;
   }
   .accounts li a.github:before {
     background-image: url(./icons/github-mark-white.png);

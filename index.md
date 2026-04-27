@@ -1,4 +1,8 @@
-# lpre_ys<span>**a.k.a** lpre-ys / lpre / えるぷれ</span>
+---
+pagetitle: lpre_ys
+---
+
+# lpre_ys<span>**a.k.a** lpre-ys / lpre / えるぷれ</span> {.name}
 
 ::: accounts
 ## アカウント / Accounts
@@ -36,6 +40,10 @@
 #### 玉露の続き物シリーズ
 某所にて公開中。
 
+#### [このksgはプロモーションを含みます](https://vipkohaku2025.x.2nt.com/035.html)
+2025年紅白投稿作品。後述の`Magic Pot GUI`の宣伝用に作ったミニゲーム。お気に入り。
+
+
 ### RPGツクール2000(2003)向けツール
 
 #### [Effect Conductor](https://github.com/lpre-ys/tk2k-effect-conductor/releases)
@@ -47,6 +55,9 @@ Effect Conductorのオマケで作ったツール。要インストール。
 #### [magic-pot](https://github.com/lpre-ys/magic-pot)
 ピクチャの透過指定用に、256色PNG画像のパレット順序を調整するCUIツール。利用手順が複雑なので詳しくはreadme読んでください。
 
+#### [Magic Pot GUI](https://github.com/lpre-ys/magic-pot-gui)
+`magic-pot`のGUI版。今から使うならこっちをオススメ。要インストール。
+
 #### [RPGツクール2000 色調シミュレータ](https://lpre-ys.github.io/tk-color-test/)
 そのまんま。Webアプリなのでインストール不要。
 
@@ -56,10 +67,13 @@ Effect Conductorのオマケで作ったツール。要インストール。
 #### [Tk2k Point Tool](https://lpre-ys.github.io/tk-point/)
 マップチップに合わせてピクチャを置きたい時の座標取得ツール。Webアプリ。
 
-#### [tk2k-pic-support](https://lpre-ys.github.io/tk2k-pic-support/)
-ピクチャを特定の位置に配置するためのツクールブリッジ用コードを吐くツール。Webアプリ。
+<!-- #### [tk2k-pic-support](https://lpre-ys.github.io/tk2k-pic-support/)
+ピクチャを特定の位置に配置するためのツクールブリッジ用コードを吐くツール。Webアプリ。 -->
 
 ### その他ツール
+
+#### [SwitchSoundOutput](https://github.com/lpre-ys/switch-sound-output/)
+サウンドの出力デバイスを1クリックで切り替えるアプリ。要インストール。
 
 #### [Choose at Random](https://lpre-ys.github.io/car/)
 ただの抽選ツール。なんとか王のインストールが面倒で作った。Webアプリ。
@@ -72,48 +86,58 @@ Effect Conductorのオマケで作ったツール。要インストール。
 ## 規約 / Licenses{#licenses}
 
 ::: update
-最終更新日: 2024.12.05
+最終更新日: 2026.04.27
 :::
 
 私、lpre_ysの著作物の全ての権利は私に帰属します。
 
 All rights reserved.
 
-本規約は、利用時点で有効な内容が適用されます。  
+本規約は、利用を開始した時点で有効な内容が適用されます。  
+開始後の規約変更は、既存の利用に遡って適用されません。  
+ただし、利用方法の変更や新たな利用については、その時点で有効な規約に従う必要があります。  
 過去の規約については[GitHubにて管理・公開](https://github.com/lpre-ys/lpre-ys.github.io/blob/main/license.md)しております。参照が必要な場合にはご確認ください。
 
-The terms effective at the time of use will apply to the usage of any materials or content.  
+The terms in effect at the time you begin using my works apply to that use.  
+Changes to the terms after that point do not apply retroactively to existing uses.  
+However, any change in how you use my works, or any new use, is subject to the terms in effect at that time.  
 Previous versions of the terms are [archived and available on GitHub](https://github.com/lpre-ys/lpre-ys.github.io/blob/main/license.md) for reference.
 
-私の著作物から、サイン・署名を剥がしての利用は固く禁じます。  
+私の著作物から、サイン・透かしを剥がしての利用は固く禁じます。  
 なりすまし及び私が直接関与していない物に対して私の名前を出すことを禁止します。  
 
 The removal of my signature or watermark from my works is strictly prohibited.  
 Impersonation or associating my name with anything I am not directly involved in is forbidden.
 
-本ページでは英語による概要を掲載しておりますが、詳細なルールおよび規約は日本語によって定められています。  
+本規約では英語による概要を掲載しておりますが、詳細なルールおよび規約は日本語によって定められています。  
 万が一、翻訳の解釈違いや誤解が生じた場合には、日本語の規約が優先されます。
 
 While this document includes an English summary, the detailed rules and terms are defined in Japanese.  
 In case of any disputes or misunderstandings, the Japanese rules will take precedence.
 
-プロフィールに記載された媒体・アカウント以外で、私が作品を発表したり、私がlpre-ysであることを公表することはありません。  
+プロフィールに記載された媒体・アカウント以外で、私が作品を発表したり、私がlpre_ysであることを公表することはありません。  
 匿名掲示板や派生サイトなど、個人アカウントを持てない場所での作品発表については、同時にSNS上でその旨をお知らせします。  
 万が一、これら以外の場面で私の名前や作品が使用されている場合は、お手数ですがご一報ください。
+
+### キャラクター
+
+本ライセンスは、私が二次創作を行ったキャラクターおよび世界観について、いかなる権利も主張するものではありません。  
+二次創作の元となる作品の権利は、原作者または正当な権利者に帰属します。
 
 ### イラスト
 
 私のイラストの転載、複製、改変、再投稿、その他の二次利用を一切禁止します。  
 ただし、いわゆるリツイートやリノートなど、SNS上で投稿を無改変のまま共有する機能については転載には該当しません。これらは自由にご利用いただけます。
 
-ゲーム素材化されていないものを素材化して利用するのも禁止です。
+ゲーム素材として公開していないイラストを素材として利用することも禁止します。
 
-ただし、公開時に何らかの利用許可を出している場合、そのルールに則る限り利用可能です。  
+ただし、公開時に個別に利用許可を出している場合、そのルールに則る限り利用可能です。  
 例）「サインを残していれば、SNSの返信画像としての利用OKです。」と記載がある場合など
 
 ### プログラム
 
 各プログラム添付のreadmeに記載のライセンスをご確認ください。  
+万が一記載が無い場合は、lpre_ys宛にご確認ください。
 
 ### ゲーム素材（ドット絵、BGMなど）
 
@@ -151,7 +175,13 @@ In case of any disputes or misunderstandings, the Japanese rules will take prece
 
 ### ゲーム
 
-公開場所や付属テキストにて許可している物を除き、プレイ動画の公開や実況配信は禁止します。
-ただし、下記の場合に限り許可します。
+プレイ動画の公開や配信を行いたい場合、下記ガイドラインを参照してください。  
+[lpre_ys製ゲームの動画投稿・配信ガイドライン](videopolicy.html)
 
-- 複数のゲームやBGMの紹介が目的の動画における、数分程度の引用
+### 編み物パターン
+
+パターンそのものの転載、複製、改変、再投稿、その他の二次利用を一切禁止します。
+
+パターンを元に編んだ作品については、特に制限はございません。  
+フリマアプリ等での販売もご自由にどうぞ。  
+その際、元にしたパターンとして、パターンのURLや私の名前を添えていただけるととても嬉しいです。
