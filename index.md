@@ -55,6 +55,10 @@ Effect Conductorのオマケで作ったツール。要インストール。
 #### [magic-pot](https://github.com/lpre-ys/magic-pot)
 ピクチャの透過指定用に、256色PNG画像のパレット順序を調整するCUIツール。利用手順が複雑なので詳しくはreadme読んでください。
 
+> おまけ: [ImageMagick実用例](./docs/imagemagick-examples.html){target="_blank"}
+> magic-potの紹介ゲーに同梱していたImageMagickサンプル集。  
+> せっかくなのでネットに置いておきます。
+
 #### [Magic Pot GUI](https://github.com/lpre-ys/magic-pot-gui)
 `magic-pot`のGUI版。今から使うならこっちをオススメ。要インストール。
 
