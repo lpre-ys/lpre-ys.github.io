@@ -87,6 +87,11 @@ Effect Conductorのオマケで作ったツール。要インストール。
 ......GitHubにage忘れてたので後で上げます。
 
 
+## 技術メモ / Tech Notes
+
+- [2025年冬の振り返り](https://lpre-ys.net/2025winter-sample/) — 2025年冬お祭り向けゲームの開発メモ・プロトタイプ記録（長文注意）
+- [Claude Code で YouTube 配信後作業を自動化した話](blog/claude-automation.html) — Claude Code + ffmpeg + WhisperX + ImageMagick を組み合わせた配信後ワークフローの紹介
+
 ## 規約 / Licenses{#licenses}
 
 ::: update

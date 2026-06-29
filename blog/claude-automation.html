@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Claude Code で YouTube 配信後作業を自動化した話</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="../style.css" />
+</head>
+<body>
+<h1 id="claude-code-で-youtube-配信後作業を自動化した話">Claude Code で
+YouTube 配信後作業を自動化した話</h1>
+<div class="update">
+<p>著者: lpre_ys　最終更新日: 2026.06.29</p>
+</div>
+<blockquote>
+<p><strong>この記事を読んでいる人へ</strong></p>
+<p>この記事の URL をあなたの Claude
+に渡して「似たようなことやりたい」と伝えれば、同じような自動化を一緒に設計してもらえると思います。<br />
+自分の PC
+スペックで動くかどうか、必要なアプリ・ツールが揃っているかどうかも、Claude
+に確認してもらってください。</p>
+</blockquote>
+<hr />
+<h2 id="はじめに">はじめに</h2>
+<p>作業配信をやっている。目的はあくまで「自分の作業を進めること」で、配信はそのついで、みたいなスタイル。</p>
+<p>そうなると、<strong>配信後の編集作業に時間をかけたくない</strong>という気持ちが強くなる。概要欄のチャプターを手で書いたり、サムネイルを毎回
+Photoshop
+で作ったり、切り抜きを切って字幕を付けてショートに変換したり、それらを全部手動でやっていたら本末転倒になってしまう。</p>
+<p>なので、Claude
+Code（CLI）にほとんど任せることにした。主に任せているのは以下の3つ。</p>
+<ul>
+<li><strong>配信終了後の処理</strong>（圧縮・文字起こし・サマリー・チャプター・サムネイル）</li>
+<li><strong>切り抜き・ショートの作成</strong>（ネタ発掘・切り出し・字幕・縦型変換）</li>
+<li><strong>細かい運用タスク</strong>（ファイル整理・アナリティクスなど）</li>
+</ul>
+<h3 id="考え方">考え方</h3>
+<p>Claude Code
+は画像や動画といったバイナリデータを直接生成したり、普通の GUI
+アプリを操作したりすることは（基本的には）できないが、CLI
+コマンドなら自由に使える。</p>
+<p>つまり、CLI コマンドで環境さえ整えておけば、Claude
+にも画像や動画を作ることができ、それらのタスクを任せることが可能になる。</p>
+<hr />
+<h2 id="使っているツール">使っているツール</h2>
+<table>
+<thead>
+<tr class="header">
+<th>ツール</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ffmpeg</td>
+<td>動画の圧縮・切り出し・合成全般</td>
+</tr>
+<tr class="even">
+<td>WhisperX</td>
+<td>文字起こし（faster-whisper バックエンド）</td>
+</tr>
+<tr class="odd">
+<td>ImageMagick</td>
+<td>サムネイル・テロップ画像の生成</td>
+</tr>
+</tbody>
+</table>
+<p><strong>前提条件:</strong> Claude Code は有料プランが必要（Pro
+以上）。WhisperX は GPU（CUDA 対応）が必須。</p>
+<p>ImageMagick
+は使い込むほどノウハウが溜まっていく系のツール。コマンドの書き方や効果の使い方を
+<code>docs/</code> 以下にドキュメントとして保存してあって、Claude Code
+はそれを参照しながら作業する。毎回ゼロから調べさせる必要がない。</p>
+<p>生成した画像を Claude Code
+自身が確認するとき、大きいサイズの画像をそのまま読み込むとトークンを大量に消費してしまう。そのため長辺が1000px
+を超える画像は確認用に縮小してからチェックするルールにしている。このリサイズには専用スクリプト（<code>check-image.sh</code>）を使っていて、元ファイルには影響しない。</p>
+<h3 id="whisperx-の環境構築">WhisperX の環境構築</h3>
+<p>WhisperX は Python の venv で独立管理している。中身は
+<strong>faster-whisper</strong>（CTranslate2
+ベースの高速推論ライブラリ）と
+<strong>whisperx</strong>（単語レベルのアライメント用）の組み合わせで、モデルは
+<code>large-v3</code> を使っている。GPU が必須で、CUDA 対応の PyTorch
+も一緒に入れる必要がある。</p>
+<p>この環境構築も Claude Code
+にやってもらった。「日本語の動画を文字起こしするスクリプトを作って、必要なライブラリも入れて」と伝えれば、venv
+の作成からライブラリのインストール、スクリプトの実装まで一通りやってくれる。</p>
+<hr />
+<h2 id="配信後処理をコマンド一発で終わらせる">1.
+配信後処理をコマンド一発で終わらせる</h2>
+<p>配信が終わったら <code>/post-stream</code>
+というスキルを呼ぶだけで、YouTube
+公開に必要な素材が全部揃う。録画圧縮と文字起こしに時間がかかるため、全部終わるまで数時間の待ちが発生する。その間に他の作業をしていればいい。</p>
+<h3 id="録画圧縮">録画圧縮</h3>
+<p>OBS で録画した MKV を ffmpeg で mp4 に変換する。コーデックは
+libx264、CRF25。1時間47分の 1080p 録画で <strong>7.6GB →
+793MB（約90%減）</strong>
+になった。エンコードは実時間の半分くらいで、1時間47分の録画で1時間前後かかった。</p>
+<h3 id="文字起こし">文字起こし</h3>
+<p>WhisperX
+で全編のトランスクリプトを生成する。後続の処理全部の土台になる。</p>
+<h3 id="配信サマリー">配信サマリー</h3>
+<p>文字起こしを Claude に読ませて、Markdown
+形式のまとめを生成する。何の話をしたか・どんな進捗があったかをざっくりまとめてくれる。サムネイルのシーン選定にも使う。</p>
+<p>サマリーと一緒に「公開前チェックリスト」も出してくれる。要するにトランスクリプトを読んで「これ大丈夫か？」と思った箇所をリストアップしてくれる機能で、実際にこんな内容が出てきた：</p>
+<blockquote>
+<ul>
+<li><code>00:14:23</code>
+<strong>「エロゲ」という単語が出てくる</strong> —
+文脈は絵の塗りスタイルの変遷話でセーフだと思うけど、YouTube審査で引っかかる可能性は念のため意識して</li>
+<li><code>01:07:42</code> <strong>モザイク前の映像</strong> —
+ゲームのシナリオにモザイクをかける前に一瞬画面が映っているが、ネタバレレベルは軽微と判断</li>
+<li><code>01:08:52</code>
+<strong>イラストのサインが画面に残っている</strong> —
+キャラのケープ横に署名があることに本人が気づいて発言している</li>
+</ul>
+</blockquote>
+<p>1時間以上の配信を全部聞いて、タイムスタンプ付きでこのレベルの拾い方をしてくれる。</p>
+<h3 id="チャプター生成">チャプター生成</h3>
+<p>OBS 側に <code>scene_logger.lua</code> という Lua
+スクリプトを仕込んでいる。録画中のシーン切り替えタイムスタンプを自動でログに書き出してくれるもの。「シーン切り替えのタイムスタンプを記録して
+logs フォルダに保存するスクリプト書いて」と Claude Code
+に言ったら書いてくれたやつで、OBS の <code>ツール &gt; スクリプト</code>
+から追加するだけで動く。</p>
+<p>このログと文字起こしを組み合わせて、YouTube
+概要欄に貼るチャプターを自動生成する。実際の出力はこんな感じ：</p>
+<pre><code>▼chapter
+0:00 準備
+4:09 【お絵かき】キャラクターの目の塗り込み
+45:19 休憩・Claude Codeワークフロー紹介
+50:55 【ゲーム制作】食堂イベントシーン実装
+1:08:12 テストプレイ（デバッグ・修正繰り返し）
+1:44:43 おわり</code></pre>
+<p>シーンログとトランスクリプトを照合して、「この時間帯はtktk（実装）とテストプレイが細かく交互に繰り返されてるから1チャプターにまとめる」みたいな判断もしてくれる。</p>
+<h3 id="サムネイル生成">サムネイル生成</h3>
+<p>ここが <code>/post-stream</code>
+の中で一番のキモ。実際の制作の流れを追ってみる。</p>
+<h4 id="フェーズ1-シーン選定と仮版5パターン">フェーズ1:
+シーン選定と仮版5パターン</h4>
+<p>Claude
+がサマリーと文字起こしを読んで「サムネイルに向いていそうなシーン」を5箇所選ぶ。今日の配信だと：</p>
+<blockquote>
+<p>お絵かき（目の塗り込み中盤）/ お絵かき（ほぼ完成した目）/ Claude
+Code紹介シーン / ゲーム制作（RPGツクールエディタ）/ テストプレイ中</p>
+</blockquote>
+<p>と選んできた。ffmpeg に付属する ffprobe
+で明るさを解析して暗い画面が映っていないかを確認し、ダメなら別タイムスタンプで撮り直す。テキストの内容・色・位置も
+Claude
+が決める。文言のトーン指針として「釣りっぽいキャッチコピーは使わない」「動詞・助動詞で終わる話しかけるような文体にする」というルールを設けてあって、それに沿って書いてくれる。</p>
+<p>ImageMagick で4パス描画して5パターンの仮版を生成した結果がこれ：</p>
+<figure>
+<img src="images/phase1_A_eye.png" style="width:70.0%" alt="A" />
+<figcaption aria-hidden="true">A</figcaption>
+</figure>
+<figure>
+<img src="images/phase1_B_eye.png" style="width:70.0%" alt="B" />
+<figcaption aria-hidden="true">B</figcaption>
+</figure>
+<figure>
+<img src="images/phase1_C_testplay.png" style="width:70.0%" alt="C" />
+<figcaption aria-hidden="true">C</figcaption>
+</figure>
+<figure>
+<img src="images/phase1_D_tktk.png" style="width:70.0%" alt="D" />
+<figcaption aria-hidden="true">D</figcaption>
+</figure>
+<figure>
+<img src="images/phase1_E_testplay.png" style="width:70.0%" alt="E" />
+<figcaption aria-hidden="true">E</figcaption>
+</figure>
+<p>ここで自分がやることは「どのシーンを使うか」を決めるだけ。今回は
+A（お絵かき中のキャラ顔）で行くことにした。</p>
+<h4 id="レイアウト調整">レイアウト調整</h4>
+<p>A
+を選んだ後、文言とレイアウトを詰める。変更を伝えるたびに上書きせず別名で保存してもらった。</p>
+<p>最初の生成（<code>A_eye.png</code>）：</p>
+<figure>
+<img src="images/iter_A_eye.png" style="width:70.0%" alt="A_eye 初版" />
+<figcaption aria-hidden="true">A_eye 初版</figcaption>
+</figure>
+<p>「上のテキストを North
+にして。文言を『目の描きこみ!!/虹彩フェチです』に」と伝えて修正（<code>A_eye2.png</code>）：</p>
+<figure>
+<img src="images/iter_A_eye2.png" style="width:70.0%" alt="A_eye2" />
+<figcaption aria-hidden="true">A_eye2</figcaption>
+</figure>
+<p>「上テキストを左寄せに（向かって右の眼がテキストに隠れてるのが気になって）」（<code>A_eye3.png</code>）：</p>
+<figure>
+<img src="images/iter_A_eye3.png" style="width:70.0%" alt="A_eye3" />
+<figcaption aria-hidden="true">A_eye3</figcaption>
+</figure>
+<p>「上下のテキストを入れ替えて、下が大きい文字に。2行目は South
+にしっかり寄せて。上を『虹彩フェチによる』に」（<code>A_eye5.png</code>）：</p>
+<figure>
+<img src="images/iter_A_eye5.png" style="width:70.0%"
+alt="A_eye5 レイアウト確定" />
+<figcaption aria-hidden="true">A_eye5 レイアウト確定</figcaption>
+</figure>
+<h4 id="フェーズ2-効果バリエーション5個">フェーズ2:
+効果バリエーション5個</h4>
+<p>レイアウトが確定したらフェーズ2。同じベースから効果を変えたバリエーションを5個生成する。</p>
+<figure>
+<img src="images/var1.png" style="width:70.0%"
+alt="var1 — ビネット＋下部グラデ暗化" />
+<figcaption aria-hidden="true">var1 —
+ビネット＋下部グラデ暗化</figcaption>
+</figure>
+<figure>
+<img src="images/var2.png" style="width:70.0%"
+alt="var2 — コントラスト強調" />
+<figcaption aria-hidden="true">var2 — コントラスト強調</figcaption>
+</figure>
+<figure>
+<img src="images/var3.png" style="width:70.0%"
+alt="var3 — テキストにplasma" />
+<figcaption aria-hidden="true">var3 — テキストにplasma</figcaption>
+</figure>
+<figure>
+<img src="images/var4.png" style="width:70.0%" alt="var4 — VHSノイズ" />
+<figcaption aria-hidden="true">var4 — VHSノイズ</figcaption>
+</figure>
+<figure>
+<img src="images/var5.png" style="width:70.0%"
+alt="var5 — ライトリーク" />
+<figcaption aria-hidden="true">var5 — ライトリーク</figcaption>
+</figure>
+<p>「var2ベースでメインテキストにグラデかけてみて」と追加依頼して出てきた
+var6（ゴールド→深紅グラデ）：</p>
+<figure>
+<img src="images/var6.png" style="width:70.0%" alt="var6" />
+<figcaption aria-hidden="true">var6</figcaption>
+</figure>
+<p>ここで「ちょっと目が滑るんだけど、白フチとのコントラスト比大丈夫？」と聞いたら、Claude
+が各色のコントラスト比を計算して問題を特定してくれた：</p>
+<blockquote>
+<ul>
+<li>上テキスト #20B2AA（teal）: 約 <strong>2.5:1</strong> ← NG</li>
+<li>下テキスト上部 #FFB300（ゴールド）: 約 <strong>1.8:1</strong> ←
+かなりNG</li>
+<li>下テキスト下部 #CC2200（深紅）: 約 <strong>5.5:1</strong> ← OK</li>
+</ul>
+</blockquote>
+<p>「細い色フチを追加するやつ、前にやったよね？あれやろう」と伝えて、Material
+Design 900系の色でフチを追加したのが var8：</p>
+<figure>
+<img src="images/var8.png" style="width:70.0%" alt="var8 色フチ追加" />
+<figcaption aria-hidden="true">var8 色フチ追加</figcaption>
+</figure>
+<p>これで確定。コマンドと文言をログに残して終了。</p>
+<p><strong>確定版：</strong></p>
+<figure>
+<img src="images/FINAL.png" style="width:70.0%" alt="FINAL" />
+<figcaption aria-hidden="true">FINAL</figcaption>
+</figure>
+<hr />
+<h2 id="切り抜きショートの作成">2. 切り抜き・ショートの作成</h2>
+<h3 id="字幕まわりの仕組みについて">字幕まわりの仕組みについて</h3>
+<p>処理の説明の前に、字幕の仕組みを簡単に。</p>
+<p>WhisperX が出力するのは <strong>SRT</strong>
+というフォーマット。「何秒から何秒にどのセリフ」というタイムスタンプ付きのテキストで、自分が読んで誤字を直したりするのもこのファイル。</p>
+<p>これをそのまま映像に焼くのではなく、一度 <strong>ASS (Advanced
+SubStation Alpha)</strong> というフォーマットに変換してから ffmpeg
+に食わせる。ASS
+はフォント・サイズ・色・フチ・ブラーなどを行ごとに細かく指定できるフォーマットで、Claude
+Code が SRT の内容を読んでスタイルを当てはめた ASS を生成し、ffmpeg
+がそれを映像に焼き込む。</p>
+<p>人間が編集するのは SRT だけで、ASS
+は自動生成される中間ファイル、というイメージ。</p>
+<h3 id="共通の流れ">共通の流れ</h3>
+<p>切り抜きもショートも、大まかな流れは同じ。</p>
+<ol type="1">
+<li><strong>ネタ発掘</strong> — <code>/suggest-clips</code>
+で文字起こしを読ませ、切り抜き向きのシーンをタイムスタンプ付きで提案させる</li>
+<li><strong>切り出し</strong> — タイムスタンプを指定して ffmpeg
+で該当区間を切り出し</li>
+<li><strong>文字起こし</strong> — WhisperX で区間の SRT を生成</li>
+<li><strong>字幕変換・焼き込み</strong> — SRT を ASS
+形式に変換してスタイルを適用し、映像に焼き込む</li>
+</ol>
+<p><code>/suggest-clips</code>
+の出力はこんな感じ。知見系・エンタメ系に分類して、自信度と理由付きで出してくれる：</p>
+<blockquote>
+<p><strong>### 8.
+「心の中の理性的な部分」vs「感情的な部分」線の書き直しを止められない</strong>
+- <strong>自信度</strong>: ★★★ - <strong>おすすめ範囲</strong>:
+00:06:01〜00:07:12 - <strong>概要</strong>:
+自由変形で線がボロボロになってしまうが縮小したらわからない。でも気になって書き直してしまう。「心の中の理性的な部分はいつも先行けよと言うんですけど、感情的な部分が直すんじゃって言って」という独り言。
+- <strong>チョイスした理由</strong>:
+「理性vs感情」という構造が面白く、テンポよく展開する絵描きあるある。共感度が高い。</p>
+</blockquote>
+<p>タイムスタンプが付いているので、そのまま <code>/make-short</code> や
+<code>/make-clip</code>
+の引数に渡せる。提案数は特に制限していなくて、気になるものは全部挙げてもらうようにしている。今回は12件出てきた。</p>
+<p>ただしタイムスタンプの精度は、post-stream時の WhisperX
+の出来次第でブレることがある。時間に余裕があるなら、アーカイブを見直して正確な範囲を自分で確認してから指定した方がいい。急いでいるときは「前後1分くらい長めに切り取って、SRTを確認してから必要な箇所だけカットして」と伝えれば、Claude
+Code 側で調整してくれる。</p>
+<p>字幕の焼き込みは <code>render.sh</code>
+というシェルスクリプトを経由するようにしている。処理を直接コマンドで実行させるのではなくスクリプト化しておくことで、2つのメリットがある。</p>
+<ul>
+<li><strong>SRT を直して <code>render.sh</code>
+を叩き直せば再レンダーできる</strong> — 誤字修正だけなら手元で SRT
+を直してスクリプトを再実行するだけ</li>
+<li><strong>後から修正・再開が楽</strong> — 何か変えたければ
+<code>render.sh</code>（とそこから呼ぶスクリプト）を修正してもらえばいいので、作業を中断してから再開しても状態を追いやすい</li>
+</ul>
+<h3 id="切り抜き固有の処理">切り抜き固有の処理</h3>
+<p>横型のまま公開する切り抜きは、字幕焼き込みまでで本編は完成。</p>
+<p>サムネイルは Claude が SRT
+を読んで「一番インパクトのあるタイミング」のセリフを1行選び、そのフレームをスクリーンショットとして保存する。オチのネタバレになる行や最後の行は避けつつ、「見た瞬間に気になる」引きのあるシーンを選んでくれる。</p>
+<h3 id="ショート固有の処理">ショート固有の処理</h3>
+<p><code>/make-short</code> で縦型（9:16 / 1080×1920）に変換する。</p>
+<p>縦型変換には2種類ある。ゲーム制作・作業画面には
+<strong>blur</strong>（上下をぼかして黒帯なしでキャンバスを埋める）、お絵描きには
+<strong>crop</strong>（画面を拡大してクロップ）を使い分けている。どちらにするかはシーンログから
+Claude Code が提案して、自分が確認してから確定する。</p>
+<ul>
+<li>無音区間を自動カット（SRT
+のギャップが1秒以上の箇所を検出して詰める。自動版は1.5秒）</li>
+<li>テロップ・フックテキストを上部に合成</li>
+<li>フック映像とのトランジション（フェードホワイト
+0.2秒）を自動挿入</li>
+</ul>
+<p>テロップ文言やフックのコピーも Claude
+に考えさせている。動画を確認した後で「ここをこう変えてほしい」と伝えれば、その都度レイアウトや文言を調整してもらえる。</p>
+<h3 id="通常版と自動版の使い分け">通常版と自動版の使い分け</h3>
+<p>通常版（<code>/make-clip</code>・<code>/make-short</code>）は、SRT
+修正・フック選定・テロップ確認などのタイミングでチェックポイントがある。Claude
+Code と一緒に進めるスタイル。</p>
+<p>自動版（<code>/make-clip-auto</code>・<code>/make-short-auto</code>）は、判断が必要な箇所もすべて
+Claude
+に委ねて一旦作り切ってもらうスタイル。暇があるときは通常版で一緒に進めて、時間がなかったり寝ている間に処理を回したいときは自動版を使う。</p>
+<p>自動生成でそのまま採用できる品質のものはまだ出てこないので、Claude
+Code
+の処理後に自分がチェックして修正点を伝えるフェーズは必ずある。ショート程度の長さで、最短30分・長くて数時間程度の工数がかかっている。それでも、全部自力でやれば数日かかるのは間違いないので、省力化の効果は大きい。</p>
+<h3 id="実例-ショート1本ができるまで">実例: ショート1本ができるまで</h3>
+<p>ネタ発掘で挙げたエンタメ系8番を、<code>/make-short-auto</code>
+でショートにした。コマンドに「<code>20260626 suggest-clipsのエンタメ系8番で作って</code>」と添えるだけで、以降は
+Claude Code が一気に処理する。</p>
+<p>自動で判断・処理した内容：</p>
+<ul>
+<li><strong>シーンログからスタイル判定</strong> — 6:01〜7:12
+はお絵描き（RKGK）シーンと判断して <code>crop</code>
+スタイルを自動選択（<code>crop=608:1080:656:0</code>）</li>
+<li><strong>縦型変換 → SRT 生成 → 無音カット</strong> — WhisperX
+で字幕を生成し、1.5秒以上の無音を6箇所検出して 71s → 61s に短縮</li>
+<li><strong>エディトリアル（Opus）</strong> — SRT の誤字修正（「書き直す
+→ 描き直す」など5件）、テロップ・フック・タイトルを選定
+<ul>
+<li>テロップ「脳内バトル」（紫
+#8800FF）を選択。「理性vs感情」より短くキャッチー、と判断</li>
+<li>フック:
+動画後半の「直すんじゃーって言って」を冒頭に持ってくる逆構成</li>
+<li>タイトル案: 「線の描き直しが止められない絵描きの脳内」</li>
+</ul></li>
+<li><strong>品質チェック</strong> — テロップ上端が 270px で 300px
+ルール違反を検出 → <code>CANVAS_H=600</code> で自動修正（310px に）</li>
+<li><strong>loudnorm</strong> — Integrated −14.07 LUFS / True Peak −1.50
+dB ✅</li>
+</ul>
+<p>無音カット後 61s。フックとエンドカードを足して完成品は 67.88 秒。60
+秒を超えているが、Opus が「問題提起 → 自虐 → 理性 vs
+感情のオチが一連で完結していてカットしたくない」と判断した結果。</p>
+<p><img src="images/short_frames.png" alt="short_frames" /> <em>左:
+フック（「直すんじゃーって言って」） / 中: 字幕入り本編序盤 / 右:
+本編中盤</em></p>
+<p>これが初稿の完成品（2.2MB・画質ダウン版）：</p>
+<video src="./videos/short_draft.mp4" controls width="300">
+</video>
+<p>自動版でそのまま採用できる品質のものが一発で出ることはまずない。動画を確認して、気になる点を修正指示として伝えるフェーズが必ずある。<code>review.md</code>
+に自動選択の根拠・誤認識候補・要確認事項がまとまっているので、それを見ながらチェックする。</p>
+<p>今回の修正の流れ：</p>
+<ul>
+<li><strong>クリップ末尾延長</strong> —
+見てみたら最後のセリフが欠けていた。「〆を07:14にして作り直せる？」と伝えるだけで元素材の切り出しからやり直してくれる</li>
+<li><strong>SRT修正 → 再カット</strong> —
+SRTをテキストエディタで自分で直してから「直したから無音カット詰め直して」と伝えると、そこから再実行してくれる</li>
+<li><strong>テロップ全面変更</strong> —
+「1行で『理性VS感情』、横幅95%くらいまで大きく、3語で色を変えて」と伝えると再生成。コントラスト比が悪かったので「黄色系はオレンジ寄りに彩度ガッツリ上げて、それ以外は明度を下げるだけでなく彩度も上げる方向で」と調整指示も</li>
+<li><strong>透過ミス・字幕統合など</strong> —
+動画を確認して気になった点を1メッセージにまとめて「テロップに黒いブロック（透過ミス）/
+underline揃えて /
+最後2行を1セリフにして」と伝えればセットで修正してくれる</li>
+<li><strong>尺調整</strong> —
+「エンドカードの表示秒数を縮めて、60秒未満にして」と言えばスクリプトのパラメータを調整して再実行</li>
+</ul>
+<p>また、作業中に <code>transcribe.py</code>
+の直接呼び出しで毎回承認ダイアログが出ることが判明した。「ラッパーシェル
+<code>transcribe.sh</code> を作って、それを allow
+リストに入れるのはどう？」と提案したらすぐ対応してくれた。こういう「作業中に気づいた環境改善」をその場でやってもらえる点も便利なところ。</p>
+<p>確定したテロップ（3色・横幅いっぱい）：</p>
+<figure>
+<img src="images/short_telop_final.png" width="640"
+alt="short_telop_final" />
+<figcaption aria-hidden="true">short_telop_final</figcaption>
+</figure>
+<p>画像上部の余白は、ショート動画のサムネイルは上端が切れる可能性があるため、テロップが見切れないよう安全マージンとして設定している。</p>
+<p>テロップなど、ASS で表現しきれない文字は ImageMagick で PNG
+を生成してから映像に合成している。今回は使っていないが、文字色をグラデーションにするなども可能。</p>
+<p>修正後の最終版（59.6秒）：</p>
+<video src="videos/short_final.mp4" controls width="300">
+</video>
+<h3 id="複数本をまとめて処理する">複数本をまとめて処理する</h3>
+<p><code>/goal</code>
+と組み合わせると、複数件の切り抜き・ショートを一気に処理できる。作業用のリストファイルを用意して「このリストを上から順に
+<code>/make-clip-auto</code>
+に流して。処理が終わったらチェックマークを付けて」という進め方にするとうまくいく。ただし本数が増えるとその分チェック工数も増えるので注意。</p>
+<hr />
+<h2 id="その他の運用サポート">3. その他の運用サポート</h2>
+<p>スキルとして定義しているものはこんなところ。</p>
+<ul>
+<li><strong>アナリティクスレポート</strong> — YouTube Studio の CSV
+を読ませて週次レポートを Markdown で生成</li>
+<li><strong>ファイル整理</strong> — logs・summary・clips
+などを月別フォルダに自動アーカイブ</li>
+<li><strong>チェックリスト管理</strong> —
+配信前後のルーティン確認リストのリセット</li>
+</ul>
+<p>スキル化していない細かいタスク、たとえば「この概要欄の文章をもう少し整えて」とか「このログ見て今週の傾向を教えて」みたいなことも、その都度そのまま押し付けている。</p>
+<hr />
+<h2 id="おわりに">おわりに</h2>
+<p>Claude Code がなければ、YouTube
+はアーカイブをとりあえず上げておくだけの場所になっていたと思う。サムネイルも概要欄も雑になって、切り抜きやショートを作る気にもなれなかったはず。</p>
+<p>今後の課題は、切り抜き・ショートの初稿の精度や品質をもっと上げること。今は
+Claude Code
+の処理後に自分でチェック・修正するフェーズがまだ残っていて、そこの工数を下げていきたい。</p>
+<hr />
+<p><em>この記事の URL を Claude
+に渡して「自分の環境でも似たようなことがしたい」と伝えれば、必要なツール・スペック・設計の相談に乗ってもらえます。</em></p>
+<footer>
+  <nav><a href="https://lpre-ys.net/">← lpre_ys.net</a></nav>
+  <small>© lpre_ys</small>
+</footer>
+</body>
+</html>
