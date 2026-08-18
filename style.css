@@ -89,9 +89,58 @@ blockquote {
   border-radius: 0 4px 4px 0;
 }
 
+table {
+  display: block;
+  width: fit-content;
+  overflow-x: auto;
+  border-collapse: collapse;
+  margin: 1.5em 1em;
+  max-width: calc(100% - 2em);
+  font-size: 0.9em;
+  line-height: 1.5;
+}
+
+/* pandoc が出力する <col style="width: NN%"> を打ち消し、内容に応じた列幅にする */
+table col {
+  width: auto !important;
+}
+
+th, td {
+  border: 1px solid rgba(175,184,193,0.5);
+  padding: 0.45em 0.7em;
+  text-align: left;
+  vertical-align: top;
+}
+
+thead th {
+  background-color: rgba(175,184,193,0.25);
+  border-bottom: 2px solid var(--primary-color);
+}
+
+/* 最終列（説明が入る列）だけ折り返し、ラベル列は途中で折らない */
+th,
+td:not(:last-child) {
+  white-space: nowrap;
+}
+
+tbody tr:nth-child(even) {
+  background-color: rgba(175,184,193,0.12);
+}
+
 .update {
   text-align: right;
   margin-right: 1em;
+}
+
+.video-embed {
+  max-width: 720px;
+  margin: 1.5em auto;
+}
+
+.video-embed iframe {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border: 0;
 }
 
 .accounts ul {

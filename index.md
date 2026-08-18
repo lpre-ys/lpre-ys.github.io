@@ -91,6 +91,7 @@ Effect Conductorのオマケで作ったツール。要インストール。
 
 - [2025年冬の振り返り](https://lpre-ys.net/2025winter-sample/) — 2025年冬お祭り向けゲームの開発メモ・プロトタイプ記録（長文注意）
 - [Claude Code で YouTube 配信後作業を自動化した話](blog/claude-automation.html) — Claude Code + ffmpeg + WhisperX + ImageMagick を組み合わせた配信後ワークフローの紹介
+- [EasyRPG Player で作る、RPGツクール2000の自動モンキーテスト環境](blog/monkey-test.html) — 仮想デスクトップ8並列でゲームを一晩自動プレイさせ、ソフトロック・クラッシュを検出する仕組みの紹介
 
 ## 規約 / Licenses{#licenses}
 
